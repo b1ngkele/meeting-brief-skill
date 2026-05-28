@@ -10,15 +10,30 @@ Use this skill when the user wants to generate or update a meeting brief from `n
 ## Workflow
 
 1. Read the user's notes and transcript.
-2. Draft only the replacement content for the section after `会议重点讨论事项`.
-3. Keep the brief concise, formal, and action-oriented:
+2. Choose the correct template and replacement section:
+   - For maintenance-special-project briefs, use `assets/template.docx` and replace the section after `会议重点讨论事项`.
+   - For `长龙数科领导班子工作例会`, use the leadership-team template when available and replace only the body between `五、参会领导作工作指示` and `六、督办工作`.
+3. Draft only the replacement content for the chosen section.
+4. Keep the brief concise, formal, and action-oriented:
    - Use short topic headings for major agenda items.
    - Under each heading, use one or more compact paragraphs.
    - Preserve dates, responsible people, deadlines, risks, and decisions from the source material.
    - Prefer facts confirmed by both notes and transcript; when they conflict, use the notes as the stronger signal and mention uncertainty only if important.
-4. Save the replacement section as a UTF-8 markdown text file.
-5. Run `scripts/replace_meeting_section.py` with the bundled template unless the user supplied another template.
-6. Verify the generated DOCX structurally, and render it for visual QA when the Documents skill renderer is available.
+5. Save the replacement section as a UTF-8 markdown text file.
+6. Run `scripts/replace_meeting_section.py` with the selected template.
+7. Verify the generated DOCX structurally, and render it for visual QA when the Documents skill renderer is available.
+
+## Leadership-Team Brief Style
+
+For `长龙数科领导班子工作例会`, match the reference style:
+
+- Preserve header metadata such as issue number, company name, meeting time/place/host, participants, absent participants, `五、参会领导作工作指示`, `六、督办工作`, and the undertaking department.
+- Use `## 督办回顾` for short progress-review paragraphs.
+- Use `## 各部门重点事项及领导工作指示` for the main decisions and instructions.
+- Prefer fewer, broader items over many narrow headings. The brief should read like leadership instructions, not a project-by-project status digest.
+- Use numbered paragraphs for major instructions, e.g. `1. 2027年外部收入考核与内部改革工作部署：...`.
+- Keep wording decisive: `会议要求`、`请...牵头`、`需...完成`、`后续...推进`.
+- Move minor schedule items such as团建 or评定 into `## 其他事项` only when they need to be retained.
 
 ## Replacement Content Format
 

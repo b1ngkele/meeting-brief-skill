@@ -11,6 +11,7 @@ input/current/
 
 templates/
   模版.docx          # 原始会议简报模板，尽量不要改
+  长龙数科领导班子工作例会模板.docx # 领导班子例会正式样式参考
 
 skills/
   meeting-brief-skill/   # skill 源码备份
@@ -46,6 +47,8 @@ tools/start_new_meeting.sh 2026-03-31-维修专班周例会
 ```text
 Use $meeting-brief 根据 input/current/notes.txt 和 input/current/transcript.txt 生成会议简报，输出到 output/新的时间戳目录。
 ```
+
+如果是“长龙数科领导班子工作例会”，优先使用 `templates/长龙数科领导班子工作例会模板.docx`，替换区间为 `五、参会领导作工作指示` 到 `六、督办工作`。
 
 ## 注意
 

@@ -4,7 +4,10 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PYTHON="/Users/shizu/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3"
 REPLACE_SCRIPT="/Users/shizu/.codex/skills/meeting-brief/scripts/replace_meeting_section.py"
-TEMPLATE="$ROOT_DIR/templates/模版.docx"
+TEMPLATE="${MEETING_TEMPLATE:-$ROOT_DIR/templates/模版.docx}"
+SECTION_HEADING="${SECTION_HEADING:-会议重点讨论事项}"
+END_MARKER="${END_MARKER:-承办部门：}"
+OUTPUT_NAME="${OUTPUT_NAME:-会议简报.docx}"
 
 CONTENT="${1:-}"
 OUT_DIR="${2:-}"
@@ -31,6 +34,8 @@ fi
 "$PYTHON" "$REPLACE_SCRIPT" \
   --template "$TEMPLATE" \
   --content "$OUT_DIR/会议重点讨论事项.md" \
-  --output "$OUT_DIR/会议简报.docx"
+  --output "$OUT_DIR/$OUTPUT_NAME" \
+  --section-heading "$SECTION_HEADING" \
+  --end-marker "$END_MARKER"
 
-echo "$OUT_DIR/会议简报.docx"
+echo "$OUT_DIR/$OUTPUT_NAME"
