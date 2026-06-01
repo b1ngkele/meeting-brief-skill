@@ -15,6 +15,11 @@ templates/
 
 skills/
   meeting-brief-skill/   # skill 源码备份
+    resources/            # 渐进式积累的民航领域知识资源
+      terminology.md      # 民航术语纠错词典（每次会议自动更新）
+      people_roles.md     # 参会人员与角色映射
+      org_context.md      # 组织背景与业务架构
+      writing_style.md    # 写作风格偏好与用户反馈
 
 output/
   20260528-161600/       # 每次生成一个独立目录
@@ -30,9 +35,12 @@ tools/
 
 1. 把新的 `notes.txt` 和 `transcript.txt` 放到 `input/current/`，覆盖旧文件。
 2. 让 Codex 使用 `$meeting-brief` 读取这两个文件，生成 `会议重点讨论事项.md`。
+   - Skill 会自动读取 `resources/` 下的术语词典、人名映射等资源来提升生成质量。
+   - 生成完成后，Skill 会自动将新发现的民航术语和人名追加到资源文件中。
 3. 运行 `tools/build_meeting_brief.sh`，生成最终 DOCX。
 4. 检查 `output/时间戳/会议简报.docx`。
-5. 如果要保留本次原始输入，可把 `input/current/` 复制到 `input/archive/会议日期或主题/`。
+5. （可选）审阅 `resources/` 下新增的 `⚠️待确认` 条目，将确认正确的改为 `✅已确认`。
+6. 如果要保留本次原始输入，可把 `input/current/` 复制到 `input/archive/会议日期或主题/`。
 
 开始下一场会议前，可以运行：
 

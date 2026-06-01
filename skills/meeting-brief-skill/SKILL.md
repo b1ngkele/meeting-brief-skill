@@ -7,21 +7,40 @@ description: Generate a Chinese meeting brief from handwritten notes and transcr
 
 Use this skill when the user wants to generate or update a meeting brief from `notes.txt`, `transcript.txt`, or similar meeting materials, especially when the output must keep the existing Word template layout.
 
+## Domain Context
+
+This skill operates in the **civil aviation industry**. Meeting briefs are generated for 长龙航空's IT subsidiary (长龙数科). Discussions typically involve airline operations, aircraft maintenance, flight crew management, passenger services, and IT platform development.
+
+Before generating any content, read `resources/org_context.md` for organization structure, business architecture (the "云" system), and key projects. This context helps correctly interpret ambiguous references in notes and transcripts.
+
 ## Workflow
 
 1. Read the user's notes and transcript.
-2. Choose the correct template and replacement section:
+2. **Load domain resources**: Read all files under `resources/` to load:
+   - `resources/terminology.md` — known civil aviation term corrections for transcript errors.
+   - `resources/people_roles.md` — name/nickname → formal name and role mappings.
+   - `resources/org_context.md` — organization structure, cloud/platform architecture, key projects.
+   - `resources/writing_style.md` — accumulated writing style preferences and user feedback.
+3. Choose the correct template and replacement section:
    - For maintenance-special-project briefs, use `assets/template.docx` and replace the section after `会议重点讨论事项`.
    - For `长龙数科领导班子工作例会`, use the leadership-team template when available and replace only the body between `五、参会领导作工作指示` and `六、督办工作`.
-3. Draft only the replacement content for the chosen section.
-4. Keep the brief concise, formal, and action-oriented:
+4. Draft only the replacement content for the chosen section.
+5. Keep the brief concise, formal, and action-oriented:
    - Use short topic headings for major agenda items.
    - Under each heading, use one or more compact paragraphs.
    - Preserve dates, responsible people, deadlines, risks, and decisions from the source material.
    - Prefer facts confirmed by both notes and transcript; when they conflict, use the notes as the stronger signal and mention uncertainty only if important.
-5. Save the replacement section as a UTF-8 markdown text file.
-6. Run `scripts/replace_meeting_section.py` with the selected template.
-7. Verify the generated DOCX structurally, and render it for visual QA when the Documents skill renderer is available.
+   - **Terminology correction**: Cross-reference transcript text against `resources/terminology.md` to correct misrecognized aviation terms. Use the correct term in the output even when the transcript uses a wrong or colloquial form.
+   - **Name resolution**: Resolve nicknames and informal references (e.g. "老胡") to formal names (e.g. "胡洪杰") using `resources/people_roles.md`. In the brief output, always use the formal name.
+   - **Style alignment**: Follow any additional preferences recorded in `resources/writing_style.md`.
+6. Save the replacement section as a UTF-8 markdown text file.
+7. Run `scripts/replace_meeting_section.py` with the selected template.
+8. Verify the generated DOCX structurally, and render it for visual QA when the Documents skill renderer is available.
+9. **Update resources**: After generating the brief, scan the source material and output for:
+   - Civil aviation terms not yet in `resources/terminology.md` — append with `⚠️待确认` status.
+   - Person names or roles not yet in `resources/people_roles.md` — append with `⚠️待确认` status.
+   - Organization or project details not yet in `resources/org_context.md` — append with `⚠️待确认` status.
+   - Report all new additions to the user in the response so they can review and correct if needed.
 
 ## Leadership-Team Brief Style
 
@@ -70,6 +89,31 @@ Optional flags:
 
 - `--section-heading` defaults to `会议重点讨论事项`.
 - `--end-marker` defaults to `承办部门：`.
+
+## Resource Files
+
+The skill maintains a set of progressively-built knowledge resources under `resources/`:
+
+| File | Purpose | Update Frequency |
+|------|---------|------------------|
+| `terminology.md` | Civil aviation term corrections for transcript ASR errors | Every session |
+| `people_roles.md` | Nickname → formal name and role mappings | Every session |
+| `org_context.md` | Organization structure, cloud architecture, key projects | Occasionally |
+| `writing_style.md` | Writing conventions and user feedback log | On user feedback |
+
+### Status Annotations
+
+Every entry uses one of these statuses:
+
+- `✅已确认` — reviewed and confirmed by the user; use with confidence.
+- `⚠️待确认` — AI-identified, not yet reviewed; use as best-effort reference.
+- `❌已废弃` — marked incorrect by the user; do not use.
+
+When generating a brief, prefer `✅已确认` entries. Use `⚠️待确认` entries as guidance but exercise caution. Ignore `❌已废弃` entries.
+
+### User Maintenance
+
+The user may directly edit any resource file at any time to correct, confirm, or remove entries. The AI should respect user edits in subsequent sessions.
 
 ## Quality Checks
 
