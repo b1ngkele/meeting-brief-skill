@@ -1,11 +1,11 @@
 ---
 name: meeting-brief
-description: Generate a Chinese meeting brief from handwritten notes and transcript text, using a fixed DOCX template and replacing only the "会议重点讨论事项" section while preserving the template title, heading, spacing, and footer formatting.
+description: Generate a Chinese meeting brief from handwritten notes, transcript text, and optional weekly meeting materials (PDF), using a fixed DOCX template and replacing only the "会议重点讨论事项" section while preserving the template title, heading, spacing, and footer formatting.
 ---
 
 # Meeting Brief
 
-Use this skill when the user wants to generate or update a meeting brief from `notes.txt`, `transcript.txt`, or similar meeting materials, especially when the output must keep the existing Word template layout.
+Use this skill when the user wants to generate or update a meeting brief from `notes.txt`, `transcript.txt`, and optionally `weeklyMeetingMaterials.pdf`, especially when the output must keep the existing Word template layout.
 
 ## Domain Context
 
@@ -15,7 +15,14 @@ Before generating any content, read `resources/org_context.md` for organization 
 
 ## Workflow
 
-1. Read the user's notes and transcript.
+0. **Check for optional PDF meeting materials**: Look for `weeklyMeetingMaterials.pdf` in the input directory (`input/current/`).
+   - If the file exists, run the PDF extraction script to convert it to markdown:
+     ```bash
+     python scripts/extract_pdf_text.py input/current/weeklyMeetingMaterials.pdf
+     ```
+     This produces `input/current/weeklyMeetingMaterials.md`.
+   - If the file does not exist, skip this step and proceed without PDF reference material.
+1. Read the user's notes and transcript. If `weeklyMeetingMaterials.md` was generated in step 0, also read it as **background reference material** — use it to better understand the agenda topics, verify terminology, and fill in context gaps, but do not copy its content verbatim into the brief.
 2. **Load domain resources**: Read all files under `resources/` to load:
    - `resources/terminology.md` — known civil aviation term corrections for transcript errors.
    - `resources/people_roles.md` — name/nickname → formal name and role mappings.
@@ -114,6 +121,19 @@ When generating a brief, prefer `✅已确认` entries. Use `⚠️待确认` en
 ### User Maintenance
 
 The user may directly edit any resource file at any time to correct, confirm, or remove entries. The AI should respect user edits in subsequent sessions.
+
+## Optional Input Files
+
+| File | Location | Purpose |
+|------|----------|----------|
+| `weeklyMeetingMaterials.pdf` | `input/current/` | 周例会材料 PPT 导出的 PDF，包含议题清单和表格。不是每次会议都有。当存在时，作为背景参考帮助 AI 更准确地理解笔记和录音转写中的议题上下文。 |
+
+### PDF Processing
+
+- The skill uses `scripts/extract_pdf_text.py` (backed by `pdfplumber`) to convert PDF to markdown.
+- Tables in the PDF are converted to markdown table format for better AI comprehension.
+- The generated `.md` file is placed alongside the original PDF in `input/current/`.
+- The `.md` file is a temporary intermediate artifact; the canonical source remains the original PDF.
 
 ## Quality Checks
 

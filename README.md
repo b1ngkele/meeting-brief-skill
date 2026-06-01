@@ -8,6 +8,7 @@
 input/current/
   notes.txt          # 本次会议手写笔记
   transcript.txt     # 本次会议录音转写
+  weeklyMeetingMaterials.pdf  # （可选）周例会材料 PDF
 
 templates/
   模版.docx          # 原始会议简报模板，尽量不要改
@@ -33,7 +34,7 @@ tools/
 
 ## 每次工作方式
 
-1. 把新的 `notes.txt` 和 `transcript.txt` 放到 `input/current/`，覆盖旧文件。
+1. 把新的 `notes.txt` 和 `transcript.txt` 放到 `input/current/`，覆盖旧文件。如果有周例会材料 PDF，同时放入 `weeklyMeetingMaterials.pdf`。
 2. 让 Codex 使用 `$meeting-brief` 读取这两个文件，生成 `会议重点讨论事项.md`。
    - Skill 会自动读取 `resources/` 下的术语词典、人名映射等资源来提升生成质量。
    - 生成完成后，Skill 会自动将新发现的民航术语和人名追加到资源文件中。
@@ -53,7 +54,7 @@ tools/start_new_meeting.sh 2026-03-31-维修专班周例会
 ## 给 Codex 的常用指令
 
 ```text
-Use $meeting-brief 根据 input/current/notes.txt 和 input/current/transcript.txt 生成会议简报，输出到 output/新的时间戳目录。
+Use $meeting-brief 根据 input/current/ 下的输入文件（notes.txt、transcript.txt、以及可选的 weeklyMeetingMaterials.pdf）生成会议简报，输出到 output/新的时间戳目录。
 ```
 
 如果是“长龙数科领导班子工作例会”，优先使用 `templates/长龙数科领导班子工作例会模板.docx`，替换区间为 `五、参会领导作工作指示` 到 `六、督办工作`。

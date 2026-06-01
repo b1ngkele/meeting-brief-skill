@@ -23,4 +23,4 @@ for file in "${files[@]}"; do
 done
 
 echo "Archived current input files to: $ARCHIVE_DIR"
-echo "Put the next notes.txt and transcript.txt in: $CURRENT_DIR"
+echo "Put the next notes.txt, transcript.txt, and optionally weeklyMeetingMaterials.pdf in: $CURRENT_DIR"

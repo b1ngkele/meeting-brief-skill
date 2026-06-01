@@ -30,3 +30,17 @@
 | 持速 | 持续适航 | Continuing Airworthiness | 飞机持续适航管理 | ⚠️待确认 | 2026-05-22 |
 | IPU | IPU数据 | — | 财务相关的内部核算数据单元 | ⚠️待确认 | 2026-05-22 |
 | 单一来源采购 | 单一来源采购 | Sole Source Procurement | 非竞争性采购方式，仅向一家供应商采购 | ⚠️待确认 | 2026-05-22 |
+| MS工卡/MSD型卡 | MS工卡 | Maintenance Standard Card | 维修标准工卡，定检维修的标准化工卡类型 | ⚠️待确认 | 2026-05-26 |
+| NRC | NRC | Non-Routine Card | 非例行工卡，针对定检中发现的非计划维修项目 | ⚠️待确认 | 2026-05-26 |
+| JCB/JCA卡 | JCB/JCA | Job Card B/A | 工卡分类，B类/A类维修工卡 | ⚠️待确认 | 2026-05-26 |
+| EU/指令 | 工程指令 | Engineering Order | 工程部门下发的维修指令，与工卡配合完成维修任务 | ⚠️待确认 | 2026-05-26 |
+| MCC | MCC | Maintenance Control Center | 维修控制中心 | ⚠️待确认 | 2026-05-26 |
+| PPC/PBC | PPC | Production Planning & Control | 生产计划控制，负责定检任务的计划与下发 | ⚠️待确认 | 2026-05-26 |
+| AMM | AMM | Aircraft Maintenance Manual | 飞机维修手册 | ⚠️待确认 | 2026-05-26 |
+| RFID | RFID | Radio Frequency Identification | 射频识别，用于航材和工具的智慧库房管理 | ⚠️待确认 | 2026-05-26 |
+| WMS | WMS | Warehouse Management System | 仓库管理系统 | ⚠️待确认 | 2026-05-26 |
+| CCAR-121 | CCAR-121 | — | 中国民航规章第121部，大型飞机公共航空运输承运人运行合格审定规则 | ⚠️待确认 | 2026-05-26 |
+| 勤务卡 | 勤务卡 | Service Card | 航线勤务维修工卡 | ⚠️待确认 | 2026-05-26 |
+| 特检卡 | 特检卡 | Special Inspection Card | 特殊检查工卡 | ⚠️待确认 | 2026-05-26 |
+| 构型树/构型管理 | 构型管理 | Configuration Management | 飞机及部件的上下级配置关系管理 | ⚠️待确认 | 2026-05-26 |
+| 单装 | 单装 | Individual Equipment | 机上单件装备（如救生衣），属盘点管理范畴 | ⚠️待确认 | 2026-05-26 |
