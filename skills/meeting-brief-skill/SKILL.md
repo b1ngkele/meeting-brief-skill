@@ -88,15 +88,19 @@ For 公司级, the content file must contain two top-level sections:
 
 ```markdown
 # 会议内容
-本次会议围绕……进行了讨论。会议认为……会议明确……
+本次会议围绕……开展研究部署，听取了……汇报，明确了……。
+会议强调……。
 
 # 会议要求
-刘启宏董事长指出……会议要求：
+刘启宏董事长指出，……。会议明确以下要求：
 
 ## 思想认识方面
 ……
 
 ## 规划实施方面
+……
+
+## 组织保障方面
 ……
 ```
 
@@ -104,8 +108,13 @@ Rules:
 
 - `# 会议内容` becomes the replacement body after `一、会议内容`; do not include `一、会议内容`.
 - `# 会议要求` becomes the replacement body after `二、会议要求`; do not include `二、会议要求`.
-- `## 标题` under `会议要求` becomes a bold numbered requirement subheading, e.g. `## 思想认识方面` becomes `（一） 思想认识方面`.
-- The template preserves `督办`, 出席人员, 主送, 承办部门, and footer content.
+- `会议内容` should be 1–2 compact paragraphs, focusing on meeting background, main topics, decisions, and consensus. Do not turn it into a project-by-project status digest.
+- `会议要求` should normally use 3–5 broad requirement headings. Prefer company-level headings such as `思想学习方面`、`规划实施方面`、`组织保障方面`、`重点落地方面`; avoid more than 5 headings unless the meeting explicitly requires it.
+- Under each `会议要求` heading, use one concise paragraph with action-oriented wording, responsible parties, deadlines, and expected outcomes where available.
+- `## 标题` under `会议要求` becomes a bold numbered requirement subheading, e.g. `## 思想学习方面` becomes `（一） 思想学习方面`.
+- Do not include `督办`, `出席人员`, `主送`, or `承办部门` in the markdown. The 公司级 template preserves the `督办` table, attendee list, main send list, undertaking department, red title, red separator, and page numbers.
+- Before using the 公司级 template, confirm `assets/公司级.docx` is a real OOXML DOCX readable by `python-docx`. If it is an old binary Word file misnamed `.docx` (`file` reports `Composite Document File V2`), convert it to a real `.docx` first with LibreOffice, then run the replacement script.
+- After generating the DOCX, render and inspect all pages. Pay special attention to the red title area, red separator line, page numbers, `督办` table, and final `主送/承办部门` page.
 
 ## Command
 
@@ -166,5 +175,6 @@ The user may directly edit any resource file at any time to correct, confirm, or
 - For 维修, confirm the document still contains one `会议重点讨论事项` heading and the footer paragraph beginning with `承办部门：` remains.
 - For 数科, confirm the document still contains `五、参会领导作工作指示` and `六、督办工作`, and only the body between them was replaced.
 - For 公司级, confirm the document still contains `一、会议内容`, `二、会议要求`, and `督办`, and only the two bodies between those markers were replaced.
+- For 公司级, confirm the `督办` table remains a real table and was not duplicated or flattened into plain paragraphs.
 - Confirm old section paragraphs were removed from the selected replacement range.
 - If generating a final DOCX for the user, render and inspect page PNGs using the Documents skill when possible.

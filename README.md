@@ -71,19 +71,19 @@ Use $meeting-brief 按“数科”模板生成长龙数科领导班子工作例�
 ### 公司级模板
 
 ```text
-Use $meeting-brief 按“公司级”模板生成公司级会议纪要：读取 input/current/ 下的 notes.txt、transcript.txt生成包含“# 会议内容”和“# 会议要求”两个区块的 markdown 文件，并调用 tools/build_meeting_brief.sh <markdown文件> <输出目录> 公司级 生成最终 DOCX。
+Use $meeting-brief 按“公司级”模板生成公司级会议纪要：先读取并遵循 skills/meeting-brief-skill/resources/ 下的术语、人名、组织背景和写作风格；读取 input/current/ 下的 notes.txt、transcript.txt，生成只包含“# 会议内容”和“# 会议要求”两个区块的 markdown 文件。“会议内容”控制为1–2个公司级概括段，“会议要求”使用3–5个统领性小标题，不写入“督办/出席人员/主送/承办部门”。随后调用 tools/build_meeting_brief.sh <markdown文件> <输出目录> 公司级 生成最终 DOCX，渲染检查红色标题、页码、督办表格和尾页，并按 skill 要求更新 resources。
 ```
 
 模板类型：
 
 - `维修`：默认值，使用 `skills/meeting-brief-skill/assets/维修.docx`，替换 `会议重点讨论事项` 到 `承办部门：` 之间的正文。
 - `数科`：使用 `skills/meeting-brief-skill/assets/数科.docx`，替换 `五、参会领导作工作指示` 到 `六、督办工作` 之间的正文。
-- `公司级`：使用 `skills/meeting-brief-skill/assets/公司级.docx`，分别替换 `一、会议内容` 到 `二、会议要求`、`二、会议要求` 到 `督办` 之间的正文。
+- `公司级`：使用 `skills/meeting-brief-skill/assets/公司级.docx`，分别替换 `一、会议内容` 到 `二、会议要求`、`二、会议要求` 到 `督办` 之间的正文；`督办`表格及后续出席人员、主送、承办部门由模板保留。
 
 ## 注意
 
 - 不要在根目录直接堆放每次生成的 DOCX。
-- 不要改 `skills/meeting-brief-skill/assets/维修.docx`、`skills/meeting-brief-skill/assets/数科.docx` 和 `skills/meeting-brief-skill/assets/公司级.docx`，除非要永久调整会议简报版式。
+- 不要改 `skills/meeting-brief-skill/assets/维修.docx`、`skills/meeting-brief-skill/assets/数科.docx` 和 `skills/meeting-brief-skill/assets/公司级.docx`，除非要永久调整会议简报版式。替换模板时请保存为真正的 Word `.docx`（OOXML）格式，不要把旧版 `.doc` 文件直接改名为 `.docx`。
 - `$meeting-brief` 只替换所选模板配置的正文区，模板标题、章节标题和后续段落会保留。
 
 ## 跨机器运行
