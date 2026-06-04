@@ -11,8 +11,8 @@ input/current/
   weeklyMeetingMaterials.pdf  # （可选）周例会材料 PDF
 
 templates/
-  模版.docx          # 原始会议简报模板，尽量不要改
-  长龙数科领导班子工作例会模板.docx # 领导班子例会正式样式参考
+  维修.docx          # 维修专班会议简报模板，替换“会议重点讨论事项”正文
+  数科.docx          # 数科领导班子例会模板，替换“五、参会领导作工作指示”正文
 
 skills/
   meeting-brief-skill/   # skill 源码备份
@@ -38,7 +38,7 @@ tools/
 2. 让 Codex 使用 `$meeting-brief` 读取这两个文件，生成 `会议重点讨论事项.md`。
    - Skill 会自动读取 `resources/` 下的术语词典、人名映射等资源来提升生成质量。
    - 生成完成后，Skill 会自动将新发现的民航术语和人名追加到资源文件中。
-3. 运行 `tools/build_meeting_brief.sh`，生成最终 DOCX。
+3. 运行 `tools/build_meeting_brief.sh <replacement.md> [output_dir] [模板类型]`，生成最终 DOCX。
 4. 检查 `output/时间戳/会议简报.docx`。
 5. （可选）审阅 `resources/` 下新增的 `⚠️待确认` 条目，将确认正确的改为 `✅已确认`。
 6. 如果要保留本次原始输入，可把 `input/current/` 复制到 `input/archive/会议日期或主题/`。
@@ -57,10 +57,39 @@ tools/start_new_meeting.sh 2026-03-31-维修专班周例会
 Use $meeting-brief 根据 input/current/ 下的输入文件（notes.txt、transcript.txt、以及可选的 weeklyMeetingMaterials.pdf）生成会议简报，输出到 output/新的时间戳目录。
 ```
 
-如果是“长龙数科领导班子工作例会”，优先使用 `templates/长龙数科领导班子工作例会模板.docx`，替换区间为 `五、参会领导作工作指示` 到 `六、督办工作`。
+模板类型：
+
+- `维修`：默认值，使用 `templates/维修.docx`，替换 `会议重点讨论事项` 到 `承办部门：` 之间的正文。
+- `数科`：使用 `templates/数科.docx`，替换 `五、参会领导作工作指示` 到 `六、督办工作` 之间的正文。
 
 ## 注意
 
 - 不要在根目录直接堆放每次生成的 DOCX。
-- 不要改 `templates/模版.docx`，除非要永久调整会议简报版式。
-- `$meeting-brief` 只替换模板中的“会议重点讨论事项”正文区，模板标题和承办部门段落会保留。
+- 不要改 `templates/维修.docx` 和 `templates/数科.docx`，除非要永久调整会议简报版式。
+- `$meeting-brief` 只替换所选模板配置的正文区，模板标题、章节标题和后续段落会保留。
+
+## 跨机器运行
+
+`tools/build_meeting_brief.sh` 默认使用当前机器 PATH 里的 `python3`，并调用本工作区内的 `skills/meeting-brief-skill/scripts/replace_meeting_section.py`，不依赖某台电脑上的 Codex 缓存目录。
+
+首次使用前，在目标机器安装 Python 依赖：
+
+```bash
+python3 -m pip install python-docx pdfplumber
+```
+
+常用命令：
+
+```bash
+tools/build_meeting_brief.sh output/20260528-161600/会议重点讨论事项.md
+tools/build_meeting_brief.sh output/20260528-173203/会议重点讨论事项_领导班子版.md output/数科简报 数科
+```
+
+如需覆盖默认路径，可使用环境变量：
+
+```bash
+PYTHON=/path/to/python3 \
+MEETING_TEMPLATE_TYPE=数科 \
+MEETING_TEMPLATE=/path/to/template.docx \
+tools/build_meeting_brief.sh output/20260528-161600/会议重点讨论事项.md
+```

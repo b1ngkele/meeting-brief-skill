@@ -1,6 +1,6 @@
 ---
 name: meeting-brief
-description: Generate a Chinese meeting brief from handwritten notes, transcript text, and optional weekly meeting materials (PDF), using a fixed DOCX template and replacing only the "会议重点讨论事项" section while preserving the template title, heading, spacing, and footer formatting.
+description: Generate a Chinese meeting brief from handwritten notes, transcript text, and optional weekly meeting materials (PDF), using the matching DOCX template for 维修 or 数科 meetings while preserving template layout and replacing only the configured section body.
 ---
 
 # Meeting Brief
@@ -28,9 +28,9 @@ Before generating any content, read `resources/org_context.md` for organization 
    - `resources/people_roles.md` — name/nickname → formal name and role mappings.
    - `resources/org_context.md` — organization structure, cloud/platform architecture, key projects.
    - `resources/writing_style.md` — accumulated writing style preferences and user feedback.
-3. Choose the correct template and replacement section:
-   - For maintenance-special-project briefs, use `assets/template.docx` and replace the section after `会议重点讨论事项`.
-   - For `长龙数科领导班子工作例会`, use the leadership-team template when available and replace only the body between `五、参会领导作工作指示` and `六、督办工作`.
+3. Choose the correct template profile:
+   - **维修**: use `assets/维修.docx`; replace the body after `会议重点讨论事项` and before the paragraph beginning `承办部门：`.
+   - **数科**: use `assets/数科.docx`; replace only the body between `五、参会领导作工作指示` and `六、督办工作`.
 4. Draft only the replacement content for the chosen section.
 5. Keep the brief concise, formal, and action-oriented:
    - Use short topic headings for major agenda items.
@@ -63,7 +63,7 @@ For `长龙数科领导班子工作例会`, match the reference style:
 
 ## Replacement Content Format
 
-The content file must contain only the body that comes after `会议重点讨论事项`.
+The content file must contain only the replacement body for the selected profile.
 
 Use:
 
@@ -81,13 +81,13 @@ Rules:
 - `## 标题` becomes a subsection heading, copied from the template's subsection style: 楷体、加粗、固定行距、原缩进。
 - Normal lines become body paragraphs, copied from the template body style: 仿宋、固定行距、原缩进。
 - Lines matching `1. 标题：正文` are written as body paragraphs with the label through `：` bolded.
-- Do not include the main heading `会议重点讨论事项`; the script preserves the existing template paragraph.
+- Do not include the profile's start heading (`会议重点讨论事项` or `五、参会领导作工作指示`); the script preserves the existing template paragraph.
 
 ## Command
 
 ```bash
 python scripts/replace_meeting_section.py \
-  --template assets/template.docx \
+  --template assets/维修.docx \
   --content replacement.md \
   --output meeting-brief.docx
 ```
@@ -96,6 +96,7 @@ Optional flags:
 
 - `--section-heading` defaults to `会议重点讨论事项`.
 - `--end-marker` defaults to `承办部门：`.
+- For the 数科 template, pass `--template assets/数科.docx --section-heading 五、参会领导作工作指示 --end-marker 六、督办工作`.
 
 ## Resource Files
 
