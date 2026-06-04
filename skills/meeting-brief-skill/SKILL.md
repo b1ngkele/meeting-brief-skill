@@ -1,6 +1,6 @@
 ---
 name: meeting-brief
-description: Generate a Chinese meeting brief from handwritten notes, transcript text, and optional weekly meeting materials (PDF), using the matching DOCX template for 维修 or 数科 meetings while preserving template layout and replacing only the configured section body.
+description: Generate a Chinese meeting brief or company-level meeting minutes from handwritten notes, transcript text, and optional weekly meeting materials (PDF), using the matching DOCX template for 维修, 数科, or 公司级 meetings while preserving template layout and replacing only the configured section body.
 ---
 
 # Meeting Brief
@@ -31,6 +31,7 @@ Before generating any content, read `resources/org_context.md` for organization 
 3. Choose the correct template profile:
    - **维修**: use `assets/维修.docx`; replace the body after `会议重点讨论事项` and before the paragraph beginning `承办部门：`.
    - **数科**: use `assets/数科.docx`; replace only the body between `五、参会领导作工作指示` and `六、督办工作`.
+   - **公司级**: use `assets/公司级.docx`; replace the body between `一、会议内容` and `二、会议要求`, and the body between `二、会议要求` and `督办`.
 4. Draft only the replacement content for the chosen section.
 5. Keep the brief concise, formal, and action-oriented:
    - Use short topic headings for major agenda items.
@@ -63,7 +64,7 @@ For `长龙数科领导班子工作例会`, match the reference style:
 
 ## Replacement Content Format
 
-The content file must contain only the replacement body for the selected profile.
+For 维修 and 数科, the content file must contain only the replacement body for the selected profile.
 
 Use:
 
@@ -83,6 +84,29 @@ Rules:
 - Lines matching `1. 标题：正文` are written as body paragraphs with the label through `：` bolded.
 - Do not include the profile's start heading (`会议重点讨论事项` or `五、参会领导作工作指示`); the script preserves the existing template paragraph.
 
+For 公司级, the content file must contain two top-level sections:
+
+```markdown
+# 会议内容
+本次会议围绕……进行了讨论。会议认为……会议明确……
+
+# 会议要求
+刘启宏董事长指出……会议要求：
+
+## 思想认识方面
+……
+
+## 规划实施方面
+……
+```
+
+Rules:
+
+- `# 会议内容` becomes the replacement body after `一、会议内容`; do not include `一、会议内容`.
+- `# 会议要求` becomes the replacement body after `二、会议要求`; do not include `二、会议要求`.
+- `## 标题` under `会议要求` becomes a bold numbered requirement subheading, e.g. `## 思想认识方面` becomes `（一） 思想认识方面`.
+- The template preserves `督办`, 出席人员, 主送, 承办部门, and footer content.
+
 ## Command
 
 ```bash
@@ -97,6 +121,7 @@ Optional flags:
 - `--section-heading` defaults to `会议重点讨论事项`.
 - `--end-marker` defaults to `承办部门：`.
 - For the 数科 template, pass `--template assets/数科.docx --section-heading 五、参会领导作工作指示 --end-marker 六、督办工作`.
+- For the 公司级 template, use `scripts/replace_company_meeting_sections.py --template assets/公司级.docx --content replacement.md --output meeting-minutes.docx`.
 
 ## Resource Files
 
@@ -140,5 +165,6 @@ The user may directly edit any resource file at any time to correct, confirm, or
 
 - For 维修, confirm the document still contains one `会议重点讨论事项` heading and the footer paragraph beginning with `承办部门：` remains.
 - For 数科, confirm the document still contains `五、参会领导作工作指示` and `六、督办工作`, and only the body between them was replaced.
+- For 公司级, confirm the document still contains `一、会议内容`, `二、会议要求`, and `督办`, and only the two bodies between those markers were replaced.
 - Confirm old section paragraphs were removed from the selected replacement range.
 - If generating a final DOCX for the user, render and inspect page PNGs using the Documents skill when possible.

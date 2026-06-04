@@ -64,6 +64,16 @@ profiles = {
         "五、参会领导作工作指示",
         "六、督办工作",
     ),
+    "公司级-会议内容": (
+        Path("skills/meeting-brief-skill/assets/公司级.docx"),
+        "一、会议内容",
+        "二、会议要求",
+    ),
+    "公司级-会议要求": (
+        Path("skills/meeting-brief-skill/assets/公司级.docx"),
+        "二、会议要求",
+        "督办",
+    ),
 }
 
 for name, (path, start_marker, end_marker) in profiles.items():
@@ -81,7 +91,7 @@ PY
 
 check_profile_builds() {
   rm -rf "$TMP_DIR"
-  mkdir -p "$TMP_DIR/维修" "$TMP_DIR/数科"
+  mkdir -p "$TMP_DIR/维修" "$TMP_DIR/数科" "$TMP_DIR/公司级"
 
   cat >"$TMP_DIR/maintenance.md" <<'EOF'
 ## 自检事项
@@ -93,17 +103,31 @@ EOF
 1. 自检结论：数科模板可正常替换参会领导工作指示正文。
 EOF
 
+  cat >"$TMP_DIR/company.md" <<'EOF'
+# 会议内容
+本次会议围绕公司级会议纪要模板替换能力开展自检，确认会议内容区块可独立生成和写入。
+
+# 会议要求
+会议要求持续保持模板结构稳定，确保会议要求区块可独立生成和写入。
+
+## 自检要求
+请保持督办、出席人员、主送和承办部门等模板原有内容不变。
+EOF
+
   "$ROOT_DIR/tools/build_meeting_brief.sh" "$TMP_DIR/maintenance.md" "$TMP_DIR/维修" 维修 >/dev/null
   "$ROOT_DIR/tools/build_meeting_brief.sh" "$TMP_DIR/digital.md" "$TMP_DIR/数科" 数科 >/dev/null
+  "$ROOT_DIR/tools/build_meeting_brief.sh" "$TMP_DIR/company.md" "$TMP_DIR/公司级" 公司级 >/dev/null
 
   check_file "$TMP_DIR/维修/会议简报.docx"
   check_file "$TMP_DIR/数科/会议简报.docx"
-  pass "Both template profiles generated DOCX files"
+  check_file "$TMP_DIR/公司级/会议简报.docx"
+  pass "All template profiles generated DOCX files"
 }
 
 check_file "$ROOT_DIR/requirements.txt"
 check_file "$ROOT_DIR/tools/build_meeting_brief.sh"
 check_file "$SKILL_DIR/scripts/replace_meeting_section.py"
+check_file "$SKILL_DIR/scripts/replace_company_meeting_sections.py"
 check_file "$SKILL_DIR/scripts/extract_pdf_text.py"
 check_python
 check_template_markers

@@ -17,6 +17,7 @@ skills/
     assets/               # 唯一模板源
       维修.docx           # 维修专班会议简报模板，替换“会议重点讨论事项”正文
       数科.docx           # 数科领导班子例会模板，替换“五、参会领导作工作指示”正文
+      公司级.docx         # 公司级会议纪要模板，替换“会议内容”和“会议要求”正文
     resources/            # 渐进式积累的民航领域知识资源
       terminology.md      # 民航术语纠错词典（每次会议自动更新）
       people_roles.md     # 参会人员与角色映射
@@ -30,7 +31,7 @@ output/
 
 tools/
   build_meeting_brief.sh # 把正文稿写入模板
-  self_check.sh          # 检查依赖、模板锚点和两类 DOCX 生成
+  self_check.sh          # 检查依赖、模板锚点和三类 DOCX 生成
   start_new_meeting.sh   # 归档旧输入，准备下一次会议
 ```
 
@@ -58,7 +59,7 @@ tools/start_new_meeting.sh 2026-03-31-维修专班周例会
 ### 维修模板
 
 ```text
-Use $meeting-brief 按“维修”模板生成会议简报：读取 input/current/ 下的 notes.txt、transcript.txt、以及可选的 weeklyMeetingMaterials.pdf，生成只包含“会议重点讨论事项”正文的 markdown 文件，并调用 tools/build_meeting_brief.sh <markdown文件> <输出目录> 维修 生成最终 DOCX。
+Use $meeting-brief 按“维修”模板生成会议简报：读取 input/current/ 下的 notes.txt、transcript.txt生成只包含“会议重点讨论事项”正文的 markdown 文件，并调用 tools/build_meeting_brief.sh <markdown文件> <输出目录> 维修 生成最终 DOCX。
 ```
 
 ### 数科模板
@@ -67,15 +68,22 @@ Use $meeting-brief 按“维修”模板生成会议简报：读取 input/curren
 Use $meeting-brief 按“数科”模板生成长龙数科领导班子工作例会简报：读取 input/current/ 下的 notes.txt、transcript.txt、以及可选的 weeklyMeetingMaterials.pdf，生成只包含“五、参会领导作工作指示”替换正文的 markdown 文件，并调用 tools/build_meeting_brief.sh <markdown文件> <输出目录> 数科 生成最终 DOCX。
 ```
 
+### 公司级模板
+
+```text
+Use $meeting-brief 按“公司级”模板生成公司级会议纪要：读取 input/current/ 下的 notes.txt、transcript.txt生成包含“# 会议内容”和“# 会议要求”两个区块的 markdown 文件，并调用 tools/build_meeting_brief.sh <markdown文件> <输出目录> 公司级 生成最终 DOCX。
+```
+
 模板类型：
 
 - `维修`：默认值，使用 `skills/meeting-brief-skill/assets/维修.docx`，替换 `会议重点讨论事项` 到 `承办部门：` 之间的正文。
 - `数科`：使用 `skills/meeting-brief-skill/assets/数科.docx`，替换 `五、参会领导作工作指示` 到 `六、督办工作` 之间的正文。
+- `公司级`：使用 `skills/meeting-brief-skill/assets/公司级.docx`，分别替换 `一、会议内容` 到 `二、会议要求`、`二、会议要求` 到 `督办` 之间的正文。
 
 ## 注意
 
 - 不要在根目录直接堆放每次生成的 DOCX。
-- 不要改 `skills/meeting-brief-skill/assets/维修.docx` 和 `skills/meeting-brief-skill/assets/数科.docx`，除非要永久调整会议简报版式。
+- 不要改 `skills/meeting-brief-skill/assets/维修.docx`、`skills/meeting-brief-skill/assets/数科.docx` 和 `skills/meeting-brief-skill/assets/公司级.docx`，除非要永久调整会议简报版式。
 - `$meeting-brief` 只替换所选模板配置的正文区，模板标题、章节标题和后续段落会保留。
 
 ## 跨机器运行
@@ -99,6 +107,7 @@ tools/self_check.sh
 ```bash
 tools/build_meeting_brief.sh output/20260528-161600/会议重点讨论事项.md
 tools/build_meeting_brief.sh output/20260528-173203/会议重点讨论事项_领导班子版.md output/数科简报 数科
+tools/build_meeting_brief.sh output/20260604/公司级会议纪要.md output/公司级纪要 公司级
 ```
 
 如需覆盖默认路径，可使用环境变量：

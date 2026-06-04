@@ -5,8 +5,10 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PYTHON="${PYTHON:-python3}"
 SKILL_DIR="${MEETING_BRIEF_SKILL_DIR:-$ROOT_DIR/skills/meeting-brief-skill}"
 REPLACE_SCRIPT="${MEETING_REPLACE_SCRIPT:-$SKILL_DIR/scripts/replace_meeting_section.py}"
+COMPANY_REPLACE_SCRIPT="${MEETING_COMPANY_REPLACE_SCRIPT:-$SKILL_DIR/scripts/replace_company_meeting_sections.py}"
 TEMPLATE_TYPE="${MEETING_TEMPLATE_TYPE:-${3:-维修}}"
 OUTPUT_NAME="${OUTPUT_NAME:-会议简报.docx}"
+REPLACE_MODE="single"
 
 CONTENT="${1:-}"
 OUT_DIR="${2:-}"
@@ -24,9 +26,16 @@ case "$TEMPLATE_TYPE" in
     DEFAULT_END_MARKER="六、督办工作"
     CONTENT_BASENAME="参会领导工作指示.md"
     ;;
+  公司级|gongsi|company|corporate)
+    DEFAULT_TEMPLATE="$SKILL_DIR/assets/公司级.docx"
+    DEFAULT_SECTION_HEADING=""
+    DEFAULT_END_MARKER=""
+    CONTENT_BASENAME="公司级会议纪要.md"
+    REPLACE_MODE="company"
+    ;;
   *)
     echo "Unknown template type: $TEMPLATE_TYPE" >&2
-    echo "Use one of: 维修, 数科, maintenance, leadership." >&2
+    echo "Use one of: 维修, 数科, 公司级, maintenance, leadership, company." >&2
     exit 2
     ;;
 esac
@@ -37,7 +46,7 @@ END_MARKER="${END_MARKER:-$DEFAULT_END_MARKER}"
 
 if [[ -z "$CONTENT" ]]; then
   echo "Usage: tools/build_meeting_brief.sh <replacement.md> [output_dir] [template_type]" >&2
-  echo "template_type: 维修 (default) or 数科" >&2
+  echo "template_type: 维修 (default), 数科, or 公司级" >&2
   exit 2
 fi
 
@@ -52,9 +61,15 @@ if ! command -v "$PYTHON" >/dev/null 2>&1; then
   exit 2
 fi
 
-if [[ ! -f "$REPLACE_SCRIPT" ]]; then
-  echo "Replacement script not found: $REPLACE_SCRIPT" >&2
-  echo "Set MEETING_BRIEF_SKILL_DIR or MEETING_REPLACE_SCRIPT if your skill is installed elsewhere." >&2
+if [[ "$REPLACE_MODE" == "company" ]]; then
+  SCRIPT_TO_RUN="$COMPANY_REPLACE_SCRIPT"
+else
+  SCRIPT_TO_RUN="$REPLACE_SCRIPT"
+fi
+
+if [[ ! -f "$SCRIPT_TO_RUN" ]]; then
+  echo "Replacement script not found: $SCRIPT_TO_RUN" >&2
+  echo "Set MEETING_BRIEF_SKILL_DIR, MEETING_REPLACE_SCRIPT, or MEETING_COMPANY_REPLACE_SCRIPT if your skill is installed elsewhere." >&2
   exit 2
 fi
 
@@ -74,11 +89,18 @@ if [[ ! -e "$CONTENT_COPY" || ! "$CONTENT" -ef "$CONTENT_COPY" ]]; then
   cp "$CONTENT" "$CONTENT_COPY"
 fi
 
-"$PYTHON" "$REPLACE_SCRIPT" \
-  --template "$TEMPLATE" \
-  --content "$CONTENT_COPY" \
-  --output "$OUT_DIR/$OUTPUT_NAME" \
-  --section-heading "$SECTION_HEADING" \
-  --end-marker "$END_MARKER"
+if [[ "$REPLACE_MODE" == "company" ]]; then
+  "$PYTHON" "$SCRIPT_TO_RUN" \
+    --template "$TEMPLATE" \
+    --content "$CONTENT_COPY" \
+    --output "$OUT_DIR/$OUTPUT_NAME"
+else
+  "$PYTHON" "$SCRIPT_TO_RUN" \
+    --template "$TEMPLATE" \
+    --content "$CONTENT_COPY" \
+    --output "$OUT_DIR/$OUTPUT_NAME" \
+    --section-heading "$SECTION_HEADING" \
+    --end-marker "$END_MARKER"
+fi
 
 echo "$OUT_DIR/$OUTPUT_NAME"
