@@ -13,13 +13,13 @@ OUT_DIR="${2:-}"
 
 case "$TEMPLATE_TYPE" in
   维修|weixiu|maintenance|repair)
-    DEFAULT_TEMPLATE="$ROOT_DIR/templates/维修.docx"
+    DEFAULT_TEMPLATE="$SKILL_DIR/assets/维修.docx"
     DEFAULT_SECTION_HEADING="会议重点讨论事项"
     DEFAULT_END_MARKER="承办部门："
     CONTENT_BASENAME="会议重点讨论事项.md"
     ;;
   数科|shuke|leadership|digital)
-    DEFAULT_TEMPLATE="$ROOT_DIR/templates/数科.docx"
+    DEFAULT_TEMPLATE="$SKILL_DIR/assets/数科.docx"
     DEFAULT_SECTION_HEADING="五、参会领导作工作指示"
     DEFAULT_END_MARKER="六、督办工作"
     CONTENT_BASENAME="参会领导工作指示.md"

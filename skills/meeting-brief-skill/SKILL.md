@@ -138,6 +138,7 @@ The user may directly edit any resource file at any time to correct, confirm, or
 
 ## Quality Checks
 
-- Confirm the document still contains one `会议重点讨论事项` heading.
-- Confirm old section paragraphs were removed and the footer paragraph beginning with `承办部门：` remains.
+- For 维修, confirm the document still contains one `会议重点讨论事项` heading and the footer paragraph beginning with `承办部门：` remains.
+- For 数科, confirm the document still contains `五、参会领导作工作指示` and `六、督办工作`, and only the body between them was replaced.
+- Confirm old section paragraphs were removed from the selected replacement range.
 - If generating a final DOCX for the user, render and inspect page PNGs using the Documents skill when possible.

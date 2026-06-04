@@ -5,17 +5,18 @@
 ## 推荐目录
 
 ```text
+requirements.txt          # Python 依赖清单
+
 input/current/
   notes.txt          # 本次会议手写笔记
   transcript.txt     # 本次会议录音转写
   weeklyMeetingMaterials.pdf  # （可选）周例会材料 PDF
 
-templates/
-  维修.docx          # 维修专班会议简报模板，替换“会议重点讨论事项”正文
-  数科.docx          # 数科领导班子例会模板，替换“五、参会领导作工作指示”正文
-
 skills/
   meeting-brief-skill/   # skill 源码备份
+    assets/               # 唯一模板源
+      维修.docx           # 维修专班会议简报模板，替换“会议重点讨论事项”正文
+      数科.docx           # 数科领导班子例会模板，替换“五、参会领导作工作指示”正文
     resources/            # 渐进式积累的民航领域知识资源
       terminology.md      # 民航术语纠错词典（每次会议自动更新）
       people_roles.md     # 参会人员与角色映射
@@ -29,6 +30,7 @@ output/
 
 tools/
   build_meeting_brief.sh # 把正文稿写入模板
+  self_check.sh          # 检查依赖、模板锚点和两类 DOCX 生成
   start_new_meeting.sh   # 归档旧输入，准备下一次会议
 ```
 
@@ -59,13 +61,13 @@ Use $meeting-brief 根据 input/current/ 下的输入文件（notes.txt、transc
 
 模板类型：
 
-- `维修`：默认值，使用 `templates/维修.docx`，替换 `会议重点讨论事项` 到 `承办部门：` 之间的正文。
-- `数科`：使用 `templates/数科.docx`，替换 `五、参会领导作工作指示` 到 `六、督办工作` 之间的正文。
+- `维修`：默认值，使用 `skills/meeting-brief-skill/assets/维修.docx`，替换 `会议重点讨论事项` 到 `承办部门：` 之间的正文。
+- `数科`：使用 `skills/meeting-brief-skill/assets/数科.docx`，替换 `五、参会领导作工作指示` 到 `六、督办工作` 之间的正文。
 
 ## 注意
 
 - 不要在根目录直接堆放每次生成的 DOCX。
-- 不要改 `templates/维修.docx` 和 `templates/数科.docx`，除非要永久调整会议简报版式。
+- 不要改 `skills/meeting-brief-skill/assets/维修.docx` 和 `skills/meeting-brief-skill/assets/数科.docx`，除非要永久调整会议简报版式。
 - `$meeting-brief` 只替换所选模板配置的正文区，模板标题、章节标题和后续段落会保留。
 
 ## 跨机器运行
@@ -75,7 +77,13 @@ Use $meeting-brief 根据 input/current/ 下的输入文件（notes.txt、transc
 首次使用前，在目标机器安装 Python 依赖：
 
 ```bash
-python3 -m pip install python-docx pdfplumber
+python3 -m pip install -r requirements.txt
+```
+
+安装后建议先运行自检：
+
+```bash
+tools/self_check.sh
 ```
 
 常用命令：
