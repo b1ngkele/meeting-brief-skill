@@ -55,8 +55,16 @@ tools/start_new_meeting.sh 2026-03-31-维修专班周例会
 
 ## 给 Codex 的常用指令
 
+### 维修模板
+
 ```text
-Use $meeting-brief 根据 input/current/ 下的输入文件（notes.txt、transcript.txt、以及可选的 weeklyMeetingMaterials.pdf）生成会议简报，输出到 output/新的时间戳目录。
+Use $meeting-brief 按“维修”模板生成会议简报：读取 input/current/ 下的 notes.txt、transcript.txt、以及可选的 weeklyMeetingMaterials.pdf，生成只包含“会议重点讨论事项”正文的 markdown 文件，并调用 tools/build_meeting_brief.sh <markdown文件> <输出目录> 维修 生成最终 DOCX。
+```
+
+### 数科模板
+
+```text
+Use $meeting-brief 按“数科”模板生成长龙数科领导班子工作例会简报：读取 input/current/ 下的 notes.txt、transcript.txt、以及可选的 weeklyMeetingMaterials.pdf，生成只包含“五、参会领导作工作指示”替换正文的 markdown 文件，并调用 tools/build_meeting_brief.sh <markdown文件> <输出目录> 数科 生成最终 DOCX。
 ```
 
 模板类型：
