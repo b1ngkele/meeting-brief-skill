@@ -44,3 +44,11 @@
 | 特检卡 | 特检卡 | Special Inspection Card | 特殊检查工卡 | ⚠️待确认 | 2026-05-26 |
 | 构型树/构型管理 | 构型管理 | Configuration Management | 飞机及部件的上下级配置关系管理 | ⚠️待确认 | 2026-05-26 |
 | 单装 | 单装 | Individual Equipment | 机上单件装备（如救生衣），属盘点管理范畴 | ⚠️待确认 | 2026-05-26 |
+| MCO | MCO工卡 | Maintenance Control Order | 维修控制类工卡/指令，涉及航线维修控制场景 | ⚠️待确认 | 2026-06-10 |
+| NC | NC系统 | — | 财务/资产账务系统，会议中用于航材资产、成本分摊和账务处理 | ⚠️待确认 | 2026-06-10 |
+| BIP | BIP接口 | Business Innovation Platform | 财务中台接口规范，用于业财出入库数据对接 | ⚠️待确认 | 2026-06-10 |
+| ACARS | ACARS报文 | Aircraft Communications Addressing and Reporting System | 飞机通信寻址与报告系统报文，会议中用于维修控制预警场景 | ⚠️待确认 | 2026-06-10 |
+| AGV | AGV智能派送 | Automated Guided Vehicle | 自动导引运输车，用于机库维修场景物料智能配送 | ⚠️待确认 | 2026-06-10 |
+| GOC | GOC平台 | Ground Operations Control | 地面运行控制平台，会议中建议纳入维修特殊车辆统一管理 | ⚠️待确认 | 2026-06-10 |
+| STARCO | STARCO | — | 会议中提到需对标调研的航线电子工卡成熟实践对象 | ⚠️待确认 | 2026-06-10 |
+| PMI | PMI | Principal Maintenance Inspector | 局方维修监察员，会议中涉及电子工卡项目汇报 | ⚠️待确认 | 2026-06-10 |

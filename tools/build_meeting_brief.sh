@@ -6,6 +6,7 @@ PYTHON="${PYTHON:-python3}"
 SKILL_DIR="${MEETING_BRIEF_SKILL_DIR:-$ROOT_DIR/skills/meeting-brief-skill}"
 REPLACE_SCRIPT="${MEETING_REPLACE_SCRIPT:-$SKILL_DIR/scripts/replace_meeting_section.py}"
 COMPANY_REPLACE_SCRIPT="${MEETING_COMPANY_REPLACE_SCRIPT:-$SKILL_DIR/scripts/replace_company_meeting_sections.py}"
+AIRCRAFT_REPLACE_SCRIPT="${MEETING_AIRCRAFT_REPLACE_SCRIPT:-$SKILL_DIR/scripts/replace_aircraft_meeting_sections.py}"
 TEMPLATE_TYPE="${MEETING_TEMPLATE_TYPE:-${3:-维修}}"
 OUTPUT_NAME="${OUTPUT_NAME:-会议简报.docx}"
 REPLACE_MODE="single"
@@ -33,9 +34,16 @@ case "$TEMPLATE_TYPE" in
     CONTENT_BASENAME="公司级会议纪要.md"
     REPLACE_MODE="company"
     ;;
+  飞机端|feijiduan|aircraft|aircraft-cloud)
+    DEFAULT_TEMPLATE="$SKILL_DIR/assets/飞机端.docx"
+    DEFAULT_SECTION_HEADING=""
+    DEFAULT_END_MARKER=""
+    CONTENT_BASENAME="飞机端工作汇报会议简报.md"
+    REPLACE_MODE="aircraft"
+    ;;
   *)
     echo "Unknown template type: $TEMPLATE_TYPE" >&2
-    echo "Use one of: 维修, 数科, 公司级, maintenance, leadership, company." >&2
+    echo "Use one of: 维修, 数科, 公司级, 飞机端, maintenance, leadership, company, aircraft." >&2
     exit 2
     ;;
 esac
@@ -63,6 +71,8 @@ fi
 
 if [[ "$REPLACE_MODE" == "company" ]]; then
   SCRIPT_TO_RUN="$COMPANY_REPLACE_SCRIPT"
+elif [[ "$REPLACE_MODE" == "aircraft" ]]; then
+  SCRIPT_TO_RUN="$AIRCRAFT_REPLACE_SCRIPT"
 else
   SCRIPT_TO_RUN="$REPLACE_SCRIPT"
 fi
@@ -89,7 +99,7 @@ if [[ ! -e "$CONTENT_COPY" || ! "$CONTENT" -ef "$CONTENT_COPY" ]]; then
   cp "$CONTENT" "$CONTENT_COPY"
 fi
 
-if [[ "$REPLACE_MODE" == "company" ]]; then
+if [[ "$REPLACE_MODE" == "company" || "$REPLACE_MODE" == "aircraft" ]]; then
   "$PYTHON" "$SCRIPT_TO_RUN" \
     --template "$TEMPLATE" \
     --content "$CONTENT_COPY" \

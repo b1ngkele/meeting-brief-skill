@@ -1,11 +1,11 @@
 ---
 name: meeting-brief
-description: Generate a Chinese meeting brief or company-level meeting minutes from handwritten notes, transcript text, and optional weekly meeting materials (PDF), using the matching DOCX template for 维修, 数科, or 公司级 meetings while preserving template layout and replacing only the configured section body.
+description: Generate a Chinese meeting brief or company-level meeting minutes from handwritten notes, transcript text, and optional meeting materials (PDF/PPTX), using the matching DOCX template for 维修, 数科, 公司级, or 飞机端工作汇报 meetings while preserving template layout and replacing only the configured section body.
 ---
 
 # Meeting Brief
 
-Use this skill when the user wants to generate or update a meeting brief from `notes.txt`, `transcript.txt`, and optionally `weeklyMeetingMaterials.pdf`, especially when the output must keep the existing Word template layout.
+Use this skill when the user wants to generate or update a meeting brief from `notes.txt`, `transcript.txt`, and optionally `weeklyMeetingMaterials.pdf` or `weeklyMeetingMaterials.pptx`, especially when the output must keep the existing Word template layout.
 
 ## Domain Context
 
@@ -15,14 +15,19 @@ Before generating any content, read `resources/org_context.md` for organization 
 
 ## Workflow
 
-0. **Check for optional PDF meeting materials**: Look for `weeklyMeetingMaterials.pdf` in the input directory (`input/current/`).
-   - If the file exists, run the PDF extraction script to convert it to markdown:
+0. **Check for optional meeting materials**: Look for `weeklyMeetingMaterials.pptx` or `weeklyMeetingMaterials.pdf` in the input directory (`input/current/`). If both exist, prefer the PPTX.
+   - If a PPTX exists, run the PPTX extraction script:
+     ```bash
+     python scripts/extract_pptx_text.py input/current/weeklyMeetingMaterials.pptx
+     ```
+     This produces `input/current/weeklyMeetingMaterials.md`.
+   - Otherwise, if a PDF exists, run the PDF extraction script to convert it to markdown:
      ```bash
      python scripts/extract_pdf_text.py input/current/weeklyMeetingMaterials.pdf
      ```
      This produces `input/current/weeklyMeetingMaterials.md`.
-   - If the file does not exist, skip this step and proceed without PDF reference material.
-1. Read the user's notes and transcript. If `weeklyMeetingMaterials.md` was generated in step 0, also read it as **background reference material** — use it to better understand the agenda topics, verify terminology, and fill in context gaps, but do not copy its content verbatim into the brief.
+   - If neither file exists, proceed without reference material.
+1. Read the user's notes and transcript. If `weeklyMeetingMaterials.md` was generated in step 0, also read it as **background reference material** — use it to understand agenda topics, verify terminology, capture project names/figures, and fill context gaps. Do not copy it verbatim. Notes and transcript remain the primary evidence for decisions and leader instructions.
 2. **Load domain resources**: Read all files under `resources/` to load:
    - `resources/terminology.md` — known civil aviation term corrections for transcript errors.
    - `resources/people_roles.md` — name/nickname → formal name and role mappings.
@@ -32,6 +37,7 @@ Before generating any content, read `resources/org_context.md` for organization 
    - **维修**: use `assets/维修.docx`; replace the body after `会议重点讨论事项` and before the paragraph beginning `承办部门：`.
    - **数科**: use `assets/数科.docx`; replace only the body between `五、参会领导作工作指示` and `六、督办工作`.
    - **公司级**: use `assets/公司级.docx`; replace the body between `一、会议内容` and `二、会议要求`, and the body between `二、会议要求` and `督办`.
+   - **飞机端**: use `assets/飞机端.docx` unless the user provides a newer template path; replace the body between `会议重点内容` and `参会领导作工作指示`, and the body between `参会领导作工作指示` and `承办部门：`. In this template, `五、` and `六、` may be Word automatic numbering rather than literal paragraph text.
 4. Draft only the replacement content for the chosen section.
 5. Keep the brief concise, formal, and action-oriented:
    - Use short topic headings for major agenda items.
@@ -84,6 +90,36 @@ Rules:
 - Lines matching `1. 标题：正文` are written as body paragraphs with the label through `：` bolded.
 - Do not include the profile's start heading (`会议重点讨论事项` or `五、参会领导作工作指示`); the script preserves the existing template paragraph.
 
+For 飞机端, the content file must contain two top-level sections:
+
+```markdown
+# 会议重点内容
+## O1生产主线
+### 五月工作进展及成果
+围绕……
+
+### 六月工作计划
+后续……
+
+## O2航材业财融合
+### 五月工作进展及成果
+……
+
+# 参会领导作工作指示
+会议要求……
+会议强调……
+```
+
+Rules:
+
+- `# 会议重点内容` replaces only the body after the template's fifth section heading; do not include `五、会议重点内容`.
+- `# 参会领导作工作指示` replaces only the body after the template's sixth section heading; do not include `六、参会领导作工作指示`.
+- `## O1生产主线` / `## O2航材业财融合` become 楷体加粗 topic headings. The replacement script adds Chinese parenthesized numbering (`（一）`, `（二）`) when missing.
+- `### 五月工作进展及成果` and similar subheadings reuse the same heading style so the layout stays aligned with the template.
+- Normal lines become 仿宋 body paragraphs with the template's fixed line spacing and first-line indent.
+- Keep the fifth section evidence-led: summarize O1/O2/O3/O4 progress, plans, key risks, owners, dates, and metrics from notes/transcript, using PPTX as context.
+- Keep the sixth section instruction-led: only write leader instructions, meeting requirements, decisions, and follow-up responsibilities supported by notes/transcript. If PPTX has no explicit leader instruction, do not invent one.
+
 For 公司级, the content file must contain two top-level sections:
 
 ```markdown
@@ -131,6 +167,7 @@ Optional flags:
 - `--end-marker` defaults to `承办部门：`.
 - For the 数科 template, pass `--template assets/数科.docx --section-heading 五、参会领导作工作指示 --end-marker 六、督办工作`.
 - For the 公司级 template, use `scripts/replace_company_meeting_sections.py --template assets/公司级.docx --content replacement.md --output meeting-minutes.docx`.
+- For the 飞机端 template, use `scripts/replace_aircraft_meeting_sections.py --template assets/飞机端.docx --content replacement.md --output meeting-brief.docx`, or run `tools/build_meeting_brief.sh replacement.md output 飞机端`.
 
 ## Resource Files
 
@@ -162,6 +199,7 @@ The user may directly edit any resource file at any time to correct, confirm, or
 | File | Location | Purpose |
 |------|----------|----------|
 | `weeklyMeetingMaterials.pdf` | `input/current/` | 周例会材料 PPT 导出的 PDF，包含议题清单和表格。不是每次会议都有。当存在时，作为背景参考帮助 AI 更准确地理解笔记和录音转写中的议题上下文。 |
+| `weeklyMeetingMaterials.pptx` | `input/current/` | 周例会材料原始 PPTX。优先于 PDF 使用，可抽取可编辑文字、表格/图表/图片数量，并作为背景参考。 |
 
 ### PDF Processing
 
@@ -170,11 +208,19 @@ The user may directly edit any resource file at any time to correct, confirm, or
 - The generated `.md` file is placed alongside the original PDF in `input/current/`.
 - The `.md` file is a temporary intermediate artifact; the canonical source remains the original PDF.
 
+### PPTX Processing
+
+- The skill uses `scripts/extract_pptx_text.py` to convert PPTX slide text to markdown.
+- The generated markdown records each slide's extracted text plus counts for pictures, tables, and charts. Treat slides with many images and little text as background context unless notes/transcript confirm their content.
+- For 飞机端工作汇报 materials, prioritize slides covering O1/O2/O3/O4 progress and plans; ignore directory, thanks, and backup pages unless needed for context.
+
 ## Quality Checks
 
 - For 维修, confirm the document still contains one `会议重点讨论事项` heading and the footer paragraph beginning with `承办部门：` remains.
 - For 数科, confirm the document still contains `五、参会领导作工作指示` and `六、督办工作`, and only the body between them was replaced.
 - For 公司级, confirm the document still contains `一、会议内容`, `二、会议要求`, and `督办`, and only the two bodies between those markers were replaced.
 - For 公司级, confirm the `督办` table remains a real table and was not duplicated or flattened into plain paragraphs.
+- For 飞机端, confirm the document still contains `会议重点内容`, `参会领导作工作指示`, and `承办部门：`; only the fifth and sixth section bodies should change.
+- For 飞机端, verify `五、` and `六、` automatic numbering still renders from the template and body paragraphs preserve the original 仿宋/楷体 formatting.
 - Confirm old section paragraphs were removed from the selected replacement range.
 - If generating a final DOCX for the user, render and inspect page PNGs using the Documents skill when possible.

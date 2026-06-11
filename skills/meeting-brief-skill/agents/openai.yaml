@@ -1,6 +1,6 @@
 interface:
   display_name: "会议简报生成"
-  short_description: "从笔记、录音和可选周例会材料生成会议简报或公司级会议纪要DOCX"
-  default_prompt: "Use $meeting-brief to generate a meeting brief or company-level meeting minutes from notes.txt, transcript.txt, and optionally weeklyMeetingMaterials.pdf while preserving the selected DOCX template formatting."
+  short_description: "从笔记、录音和可选PDF/PPTX材料生成多模板会议简报DOCX"
+  default_prompt: "Use $meeting-brief to generate a meeting brief or company-level meeting minutes from notes.txt, transcript.txt, and optionally weeklyMeetingMaterials.pdf or weeklyMeetingMaterials.pptx while preserving the selected DOCX template formatting."
 policy:
   allow_implicit_invocation: true
