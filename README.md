@@ -61,7 +61,7 @@ tools/start_new_meeting.sh 2026-03-31-维修专班周例会
 ### 维修模板
 
 ```text
-Use $meeting-brief 按“维修”模板生成会议简报：读取 input/current/ 下的 notes.txt、transcript.txt生成只包含“会议重点讨论事项”正文的 markdown 文件，并调用 tools/build_meeting_brief.sh <markdown文件> <输出目录> 维修 生成最终 DOCX。
+Use $meeting-brief 按“维修”模板生成会议简报：读取 input/current/ 下的 notes.txt、transcript.txt、以及可选的 weeklyMeetingMaterials.pdf生成只包含“会议重点讨论事项”正文的 markdown 文件，并调用 tools/build_meeting_brief.sh <markdown文件> <输出目录> 维修 生成最终 DOCX。
 ```
 
 ### 数科模板
